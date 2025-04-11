@@ -1,0 +1,1 @@
+helm delete caagent -n appdynamics

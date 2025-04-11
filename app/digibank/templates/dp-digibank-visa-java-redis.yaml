@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visa-java-backend-redis
+  namespace: visa-backends
+  labels:
+    app: visa-java-backend-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visa-java-backend-redis
+  template:
+    metadata:
+      labels:
+        app: visa-java-backend-redis
+    spec:
+      containers:
+        - name: visa-java-backend-redis
+          image: "{{ .Values.image.visa_redis }}"
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: REDIS_HOST
+              value: "redis-svc.visa-backends.svc.cluster.local"
+            - name: REDIS_PORT
+              value: "6379"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: visa-java-backend-redis-svc
+  namespace: visa-backends
+  labels:
+    app: visa-java-backend-redis
+spec:
+  selector:
+    app: visa-java-backend-redis
+  ports:
+    - protocol: TCP
+      port: 8081        # Expose on port 8081
+      targetPort: 8080 # The port on which your container is running
+  type: ClusterIP     # Change to LoadBalancer for external access

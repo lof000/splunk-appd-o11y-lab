@@ -1,0 +1,1 @@
+helm delete -n o11y splunk-otel-collector
