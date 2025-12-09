@@ -5,17 +5,19 @@ This repository contains sample code to simulate an application that traverses n
 ## Overview
 
 **DigiBank** is a sample application with the following components:
-- **Namespaces `digibank` and `digibank-backends`**: Simulate an n-tier application using Java and Node.js with MySQL.
-- **Namespace `visa-backends`**: Simulates microservices using Java and Redis.
+- **Namespaces `digibank` and `digibank-backends`**: Simulate an n-tier application using Java and Node.js with MySQL. AppDynamics java agents in dual mode sending traces to AppDynamics and Splunk OTel Collector
+- **Namespace `visa-backends`**: Simulates microservices using Java and Redis. Splunk java agent.
+- **Namespace `splunk-appd`**: Splunk AppDynamics Cluster Agent
+- **Namespace `splunk-o11y`**: Splunk OTel Collector/Operator 
 
 ![Architecture Diagram](/img/digibank.png)
 
 ## Requirements
 
 To run this application, ensure you have:
-- A running Kubernetes (k8s) cluster
+- A running Kubernetes (k8s) cluster - tested with EKS 1.32 and docker desktop kubernetes
 - `kubectl` installed and configured
-- Helm installed
+- Helm 3.19
 - Access to an AppDynamics controller
 - Access to Splunk Observability Cloud
 
@@ -31,24 +33,9 @@ Navigate to the `app/digibank` folder and run:
 helm install digibank .
 ```
 
-### 2. Deploy AppDynamics Cluster Agent
+### 2. Deploy Splunk OTel Collector
 
-In the `AppDInstrumentation` folder:
-- Edit `values-ca1.yaml` to configure:
-    - your controller connection in the `controllerInfo:` section.
-    - your application name in the `instrumentationConfig:`
-- Install the cluster agent:
-
-```bash
-./init.sh
-./install.sh
-```
-
-##### cluster agent will do auto-instrumentation
-
-### 3. Deploy Splunk OTel Collector
-
-In the `o11yInstrumentation` folder, run:
+In the `o11yInstrumentation` folder:
 
 - Edit `install_otel_collector.sh` and fill out your information
 
@@ -67,12 +54,83 @@ S_ENVIRONMENT="<ENVIRONMENT>"
 
 Replace `<your_ingestion_token>` with your Splunk Observability Cloud ingestion token.
 
-### 4. Instrument Microservices with Splunk OTel Agent
+- Validate
+```bash
+kubectl get pods -n splunk-o11y
+
+splunk-otel-collector-agent-2f4b2                             (one per node)     Running   
+splunk-otel-collector-k8s-cluster-receiver-7c9bf8c6c5-pfl4k   1/1     Running
+splunk-otel-collector-operator-67ff5f79b8-jjq27               2/2     Running   
+
+```
+
+[Install the Collector using Helm](https://help.splunk.com/en/splunk-observability-cloud/manage-data/splunk-distribution-of-the-opentelemetry-collector/get-started-with-the-splunk-distribution-of-the-opentelemetry-collector/collector-for-kubernetes/install-with-helm)
+
+
+### 3. Instrument Microservices with Splunk OTel Agent
 
 In the `o11yInstrumentation` folder, run:
 
 ```bash
 ./instrument_code.sh
+```
+- Validate
+
+wait a few minutes and run
+
+```bash
+kubectl describe pod visa-java-backend-redis-77446b8f67-x6g2j -n visa-backends|grep Image:
+
+    Image:         ghcr.io/signalfx/splunk-otel-java/splunk-otel-java:v2.20.1
+    Image:          leandrovo/digitalbank-backend-java-redis:1.0
+
+```
+
+
+### 4. Deploy Splunk AppDynamics Cluster Agent
+
+In the `AppDInstrumentation` folder:
+- Rename `values-ca1-example.yaml` to `values-ca1.yaml`
+- Edit `values-ca1.yaml` to configure:
+    - your controller connection in the `controllerInfo:` section.
+    - your application name in the `instrumentationConfig:`
+- Install the cluster agent:
+
+```bash
+./init.sh
+./install.sh
+```
+
+- Validate
+
+```bash
+kubectl get pods -n splunk-appd
+
+NAME                                                             READY   
+appdynamics-operator-576cbdc454-87rhm                            1/1    
+caagent-appdynamics-cluster-agent-splunk-appd-77f957c6bc-646jv   1/1    
+
+```
+##### Reference doc.
+
+[Install the Cluster Agent with Helm Charts](https://help.splunk.com/en/appdynamics-saas/infrastructure-visibility/25.10.0/monitor-kubernetes-with-the-cluster-agent/installation-overview/install-the-cluster-agent-with-helm-charts)
+
+
+[Auto-Instrument Applications with the Cluster Agent](https://help.splunk.com/en/appdynamics-saas/infrastructure-visibility/25.10.0/monitor-kubernetes-with-the-cluster-agent/auto-instrument-applications-with-the-cluster-agent)
+
+
+>>> indicar onde alteraou?? resouece attibs.. variavel de ambietn para ativar o agente..
+
+##### cluster agent will do auto-instrumentation
+
+
+- The Splunk AppDynamics operator will attach the AppDynamics dual agent according to what is defined in the values-ca1.yaml file. After 5 minutes you can run the below command and validate.
+
+```bash
+kubectl describe pod digital-bank-front-f875775bf-92lwv -n digibank|grep Image: 
+
+    Image:         docker.io/appdynamics/java-agent:latest
+    Image:          leandrovo/digitalbank-new:3.0
 ```
 
 ### 5. Generate Load
@@ -82,6 +140,8 @@ In the `app/digibank-load` folder, run:
 ```bash
 helm install digibank-load .
 ```
+
+- wait about 5 minutes
 
 ### 6. Verify Deployment
 

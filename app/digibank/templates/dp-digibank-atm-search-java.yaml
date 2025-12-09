@@ -5,8 +5,8 @@ metadata:
   namespace: digibank-backends
   labels:
     app: digital-bank-backends-atm-java
-    tier: backend
-    tier-name: backend-atm
+    tiername: atm-java
+    tier-name: backend-atm    
 spec:
   replicas: 1
   selector:
@@ -16,8 +16,7 @@ spec:
     metadata:
       labels:
         app: digital-bank-backends-atm-java
-        tier: backend
-        tier-name: backend-atm        
+        tier-name: backend-atm
     spec:
       containers:
       - name: digital-bank-backends-atm-java

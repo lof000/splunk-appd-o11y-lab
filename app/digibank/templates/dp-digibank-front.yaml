@@ -5,6 +5,7 @@ metadata:
   namespace: digibank
   labels:
     app: digital-bank
+    tiername: frontend
 spec:
   replicas: 1
   selector:

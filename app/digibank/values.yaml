@@ -1,6 +1,6 @@
 replicaCount: 1
 
-otelresource: "service.namespace=digibank"
+otelresource: "service.namespace=digibank,deployment.environment=digibank_lab,deployment.environment.name=digibank_lab"
 
 secret:
   mysql:

@@ -3,8 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: digital-bank-backends-atm-node
-    tier: backend
-    tier-name: backend-atm    
+    tiername: atm-node       
   name: digital-bank-backends-atm-node-deployment
   namespace: digibank-backends
 spec:
@@ -17,8 +16,7 @@ spec:
     metadata:
       labels:
         app: digital-bank-backends-atm-node
-        tier: backend
-        tier-name: backend-atm              
+        tier-name: backend-atm
     spec:
       containers:
       - image: "{{ .Values.image.atm_node }}"

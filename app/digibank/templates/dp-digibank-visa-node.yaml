@@ -3,8 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: digital-bank-backends-visa-node
-    tier: backend
-    tier-name: backend-visa    
+    tiername: visapay-node       
   name: digital-bank-backends-visa-node-deployment
   namespace: digibank-backends
 spec:
@@ -16,13 +15,10 @@ spec:
   template:
     metadata:
       labels:
-        app: digital-bank-backends-visa-node
-        tier: backend
-        tier-name: backend-visa              
+        app: digital-bank-backends-visa-node             
     spec:
       containers:
       - image: "{{ .Values.image.visa_node }}"
-              
         name: digital-bank-backends-visa-node
         ports:
           - name: visa-port

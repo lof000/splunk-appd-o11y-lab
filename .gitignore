@@ -1,1 +1,10 @@
 .DS_Store
+AppDInstrumentation/values-ca1-with-splunk-otel.yaml
+get_helm.sh
+AppDInstrumentation/values-ca1.yaml
+AppDInstrumentation/values-ca1.yaml
+AppDInstrumentation/values-ca1.yaml
+AppDInstrumentation/values-ca1.yaml
+AppDInstrumentation/values-ca1.yaml
+AppDInstrumentation/values.yaml
+AppDInstrumentation/all-ca-values.yaml

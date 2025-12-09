@@ -1,0 +1,60 @@
+# To install Cluster Agent 
+installClusterAgent: true
+installInfraViz: false
+
+infraViz: 
+  appName: "appName"
+  nodeOS: "linux" 
+  enableMasters: false 
+  stdoutLogging: false 
+  enableContainerHostId: true 
+  enableServerViz: true 
+  enableDockerViz: false 
+
+#INSTALL SPLUNK OTEL COLLECTOR
+installSplunkOtelCollector: false
+
+# controller info
+controllerInfo:
+  url: xxxx
+  account: xxx
+  username: xxxx
+  password: xxxx      
+  accessKey: xxx
+
+clusterAgent:
+  nsToMonitorRegex: digibank
+  priorityClassName: "system-node-critical"
+  logProperties:
+    logFileSizeMb: 5
+    logFileBackups: 3
+    logLevel: DEBUG  
+    stdoutLogging: true
+
+#auto instrumentation configuration
+clusterName : digibank_k8s_cluster
+instrumentationConfig:
+  enabled: true
+  instrumentationMethod: Env
+  nsToInstrumentRegex: digibank
+  tierNameStrategy: label  
+  defaultAppName: digibank
+  imageInfo:
+    java:
+      image: "docker.io/appdynamics/java-agent:latest"
+      agentMountPath: /opt/appdynamics
+      imagePullPolicy: Always
+  instrumentationRules:  
+    - matchString: digital-bank-front|digital-bank-credit-deployment|digital-bank-backends-atm-java-deployment  
+      namespaceRegex: digibank
+      language: java
+      tierNameLabel: tiername 
+      imageInfo:
+        image: "docker.io/appdynamics/java-agent:latest"    
+        agentMountPath: /opt/appdynamics
+        imagePullPolicy: Always
+      # ENABLE APPDYNAMICS DUAL AGENT FEATURE
+      customAgentConfig: "-Dappdynamics.opentelemetry.enabled=true -Dagent.deployment.mode=dual -Dotel.traces.exporter=otlp -Dotel.logs.exporter=otlp -Dotel.metrics.exporter=otlp -Dotel.exporter.otlp.endpoint=http://splunk-otel-collector-agent.splunk-o11y.svc.cluster.local:4318"
+
+
+# https://help.splunk.com/en/appdynamics-saas/application-performance-monitoring/25.10.0/splunk-appdynamics-for-opentelemetry/instrument-applications-with-splunk-appdynamics-for-opentelemetry/enable-opentelemetry-in-the-java-agent/enable-dual-signal-mode
