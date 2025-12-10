@@ -118,8 +118,8 @@ caagent-appdynamics-cluster-agent-splunk-appd-77f957c6bc-646jv   1/1
 
 [Auto-Instrument Applications with the Cluster Agent](https://help.splunk.com/en/appdynamics-saas/infrastructure-visibility/25.10.0/monitor-kubernetes-with-the-cluster-agent/auto-instrument-applications-with-the-cluster-agent)
 
+https://help.splunk.com/en/appdynamics-saas/infrastructure-visibility/25.10.0/monitor-kubernetes-with-the-cluster-agent/installation-overview/install-the-cluster-agent-with-helm-charts
 
->>> indicar onde alteraou?? resouece attibs.. variavel de ambietn para ativar o agente..
 
 ##### cluster agent will do auto-instrumentation
 

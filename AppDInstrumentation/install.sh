@@ -1,6 +1,6 @@
 kubectl create ns splunk-appd
 
-helm install -f ./values-ca1.yaml "caagent" appdynamics-cloud-helmcharts/cluster-agent --namespace=splunk-appd
+helm install -f ./values.yaml "caagent" appdynamics-cloud-helmcharts/cluster-agent --namespace=splunk-appd
 
 # to list available versions
 # helm search repo appdynamics-cloud-helmcharts --versions
