@@ -9,3 +9,5 @@ AppDInstrumentation/values-ca1.yaml
 AppDInstrumentation/values.yaml
 AppDInstrumentation/all-ca-values.yaml
 o11yInstrumentation/install_otel_collector_dockerdesk.sh
+app/digibank-load/terraform.tfstate
+AppDInstrumentation/values-new.yaml

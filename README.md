@@ -90,7 +90,7 @@ kubectl describe pod visa-java-backend-redis-77446b8f67-x6g2j -n visa-backends|g
 ### 4. Deploy Splunk AppDynamics Cluster Agent
 
 In the `AppDInstrumentation` folder:
-- Rename `values-ca1-example.yaml` to `values-ca1.yaml`
+- Rename `values-ca1-example.yaml` to `values.yaml`
 - Edit `values-ca1.yaml` to configure:
     - your controller connection in the `controllerInfo:` section.
     - your application name in the `instrumentationConfig:`
